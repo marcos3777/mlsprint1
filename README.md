@@ -104,7 +104,7 @@ pip install pandas numpy tensorflow scikit-learn matplotlib
 
 ## 🎥 Apresentação
 
-**Vídeo do Projeto**: [YouTube](https://www.youtube.com/watch?v=5nN9AZ1_jY4)
+**Vídeo do Projeto**: Linkado no arquivo enviado
 
 ## 🔮 Melhorias Futuras
 
