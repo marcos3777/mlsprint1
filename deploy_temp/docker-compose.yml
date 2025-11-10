@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # API FastAPI
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: mottu-api
+    ports:
+      - "8502:8000"
+    volumes:
+      - ./models:/app/models:ro  # Volume compartilhado para modelos (read-only)
+      - ./dados_mottu_corrigido.csv:/app/dados_mottu_corrigido.csv:ro
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    networks:
+      - mottu-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Dashboard Streamlit
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.dashboard
+    container_name: mottu-dashboard
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./models:/app/models:ro  # Volume compartilhado para modelos (read-only)
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    networks:
+      - mottu-network
+    depends_on:
+      - api
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+networks:
+  mottu-network:
+    driver: bridge
+
